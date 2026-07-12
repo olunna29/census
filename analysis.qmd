@@ -37,5 +37,47 @@ ggplot(income_tx) +
   theme_void()
 ```
 
+```{r}
+#| message: false
+#| cache: true
+edu_state <- get_acs(
+  geography = "state",
+  variables = c(
+    "B15003_022",
+    "B15003_023",
+    "B15003_024",
+    "B15003_025"
+  ),
+  summary_var = "B15003_001",
+  year = 2020
+)
+```
+
+```{r}
+#| fig-height: 10
+edu_state |>
+  group_by(GEOID, NAME) |>
+  summarize(
+    pct_bachelors_or_higher = sum(estimate, na.rm = TRUE) / first(summary_est),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = pct_bachelors_or_higher, y = reorder(NAME, pct_bachelors_or_higher))) +
+  geom_col(fill = "steelblue") +
+  scale_x_continuous(labels = scales::label_percent()) +
+  labs(
+    title = "Educational Attainment: Bachelor's Degree or Higher by State",
+    subtitle = "Percentage of population aged 25 and older",
+    x = "Percent of Population (Age 25+)",
+    y = NULL,
+    caption = "Source: 2016-2020 American Community Survey, US Census Bureau"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title.position = "plot",
+    panel.grid.major.y = element_blank(),
+    plot.caption = element_text(face = "italic", color = "gray30")
+  )
+```
+
 
 
