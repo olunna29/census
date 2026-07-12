@@ -1,0 +1,41 @@
+---
+title: "Analyzing US Census Data"
+author: "Oluchi Nnadi"
+format: html
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(tidycensus)
+library(sf)
+```
+
+```{r}
+#| message: false
+income_tx <- get_acs(
+  geography = "county",
+  variables = "B19013_001",
+  state = "TX",
+  year = 2020,
+  geometry = TRUE
+)
+```
+
+
+```{r}
+ggplot(income_tx) +
+  geom_sf(aes(fill = estimate), color = "white", size = 0.1) +
+  scale_fill_viridis_c(labels = scales::label_dollar()) +
+  labs(
+    title = "Median Household Income by County in Texas",
+    subtitle = "2016-2020 American Community Survey",
+    fill = "Median Income"
+  ) +
+  theme_void()
+```
+
+
+
